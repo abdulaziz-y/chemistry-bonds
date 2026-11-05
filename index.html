@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مختبر الروابط الكيميائية - الواقع المعزز</title>
+    <title>مختبر الروابط الكيميائية — الصف الثالث المتوسط</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -26,41 +26,44 @@
             <p class="subtitle">من التجريد إلى المشاهدة</p>
             <p class="description">
                 تجربة تفاعلية ثلاثية الأبعاد لفهم الروابط الكيميائية والتفاعلات الذرية
-                <br>الصف الثالث المتوسط | مادة العلوم
+                <br><strong>الصف الثالث المتوسط | مادة العلوم</strong>
             </p>
             <div class="features">
-                <div class="feature"><span class="icon">⚛️</span><span>إلكترونات التكافؤ</span></div>
-                <div class="feature"><span class="icon">🔗</span><span>الرابطة الأيونية</span></div>
-                <div class="feature"><span class="icon">🤝</span><span>الرابطة التساهمية</span></div>
+                <div class="feature"><span class="icon">⚛️</span><span>1. إلكترونات التكافؤ</span></div>
+                <div class="feature"><span class="icon">🔗</span><span>2. الرابطة الأيونية</span></div>
+                <div class="feature"><span class="icon">🤝</span><span>3. الرابطة التساهمية</span></div>
+                <div class="feature"><span class="icon">🔥</span><span>4. الرابطة الفلزية</span></div>
+                <div class="feature"><span class="icon">🧭</span><span>5. الرابطة القطبية</span></div>
+                <div class="feature"><span class="icon">⚖️</span><span>6. موازنة المعادلات</span></div>
             </div>
             <button class="btn-primary" onclick="startLab()">ابدأ التجربة 🚀</button>
-            
             <div class="qr-section">
                 <p>📱 امسح الرمز لفتح النشاط على هاتفك</p>
                 <div id="qrcode"></div>
             </div>
-            
             <button class="btn-link" onclick="showHelp()">كيفية الاستخدام؟</button>
         </div>
     </div>
 
     <!-- ===== التطبيق الرئيسي ===== -->
     <div id="main-app" class="hidden">
-        
-        <!-- الرأس -->
         <header id="app-header">
-            <div class="header-left"><span class="app-title">⚛️ مختبر الروابط</span></div>
+            <div class="header-left">
+                <span class="app-title">⚛️ مختبر الروابط</span>
+            </div>
             <div class="header-center">
                 <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-                <span class="progress-text" id="progress-text">0 / 3</span>
+                <span class="progress-text" id="progress-text">0 / 6</span>
             </div>
             <div class="header-right">
+                <div class="gamification-badge" id="points-badge">
+                    <span>⭐</span> <span id="points-value">0</span>
+                </div>
                 <button class="icon-btn" onclick="showHelp()" title="مساعدة">❓</button>
                 <button class="icon-btn" onclick="backToWelcome()" title="الرئيسية">🏠</button>
             </div>
         </header>
 
-        <!-- التبويبات -->
         <nav id="activity-tabs">
             <button class="tab active" data-activity="1" onclick="switchActivity(1)">
                 <span class="tab-num">1</span><span class="tab-label">إلكترونات التكافؤ</span>
@@ -71,101 +74,295 @@
             <button class="tab" data-activity="3" onclick="switchActivity(3)">
                 <span class="tab-num">3</span><span class="tab-label">الرابطة التساهمية</span>
             </button>
+            <button class="tab" data-activity="4" onclick="switchActivity(4)">
+                <span class="tab-num">4</span><span class="tab-label">الرابطة الفلزية</span>
+            </button>
+            <button class="tab" data-activity="5" onclick="switchActivity(5)">
+                <span class="tab-num">5</span><span class="tab-label">الرابطة القطبية</span>
+            </button>
+            <button class="tab" data-activity="6" onclick="switchActivity(6)">
+                <span class="tab-num">6</span><span class="tab-label">موازنة المعادلات</span>
+            </button>
         </nav>
 
-        <!-- منطقة المشهد -->
         <main id="scene-wrapper">
             <aside id="instruction-panel">
                 <h3 id="instr-title">إلكترونات التكافؤ</h3>
-                <p id="instr-desc">اسحب الإلكترون المتوهج إلى الصندوق المخصص.</p>
+                <p id="instr-desc">اسحب الإلكترون المتوهج إلى المنطقة الخضراء.</p>
                 <div class="tip"><span>💡</span><span id="instr-tip"></span></div>
             </aside>
 
-            <a-scene id="ar-scene" background="color: #1a1a1a" renderer="antialias: true" embedded>
-                <a-entity light="type: ambient; color: #ffffff; intensity: 0.7"></a-entity>
-                <a-entity light="type: directional; color: #ffffff; intensity: 1.2; position: 5 10 7"></a-entity>
-                <a-entity light="type: point; color: #00ffff; intensity: 0.6; position: 0 4 3"></a-entity>
-                
-                <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#252530"></a-plane>
-                <a-grid position="0 0.01 0" rotation="-90 0 0" width="20" height="20" cell-size="0.5" color="#3a3a45" opacity="0.3"></a-grid>
+            <div id="drag-hint" class="hidden">
+                <span>✨ أفلت الإلكترون داخل المنطقة الخضراء</span>
+            </div>
 
-                <a-entity id="camera-rig" position="0 2 5" look-controls>
-                    <a-entity camera position="0 0 0"></a-entity>
+            <!-- ================= المشهد ثلاثي الأبعاد ================= -->
+            <a-scene id="ar-scene" background="color: #1a1a1a" renderer="antialias: true" embedded>
+                <a-entity light="type: ambient; color: #ffffff; intensity: 0.8"></a-entity>
+                <a-entity light="type: directional; color: #ffffff; intensity: 1.3; position: 3 8 5"></a-entity>
+                <a-entity light="type: point; color: #00ffff; intensity: 0.6; position: 0 4 2"></a-entity>
+                
+                <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#1e1e28"></a-plane>
+                <a-grid position="0 0.01 0" rotation="-90 0 0" width="20" height="20" cell-size="0.5" color="#3a3a45" opacity="0.25"></a-grid>
+
+                <!-- الكاميرا -->
+                <a-entity id="camera-rig" position="0 2.3 5" look-controls="touchEnabled: true; mouseEnabled: true">
+                    <a-entity camera position="0 0 0" rotation="-8 0 0"></a-entity>
                 </a-entity>
 
-                <!-- النشاط 1: إلكترونات التكافؤ -->
+                <!-- ============ النشاط 1: إلكترونات التكافؤ ============ -->
                 <a-entity id="activity-1" visible="true">
-                    <a-entity position="-2 2 -2">
+                    <a-entity position="-2 1.8 -2">
+                        <a-sphere radius="0.55" color="#ff4d4d"></a-sphere>
+                        <a-sphere position="0.18 0.12 0" radius="0.55" color="#999"></a-sphere>
+                        <a-sphere position="-0.18 -0.12 0.05" radius="0.55" color="#ff4d4d"></a-sphere>
+                        <a-text value="Na" align="center" position="0 -1.2 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-sphere position="0.9 0.3 0.3" radius="0.1" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.4"></a-sphere>
+                        <a-sphere position="-0.9 -0.3 0.3" radius="0.1" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.4"></a-sphere>
+                    </a-entity>
+                    <a-sphere class="draggable" data-activity="1" data-electron="valence-1"
+                              data-initial-pos="-1 1.8 -2"
+                              position="-1 1.8 -2" radius="0.32" color="#00ffff"
+                              material="emissive: #00ffff; emissiveIntensity: 1.6; metalness: 0.3; roughness: 0.2"
+                              drag-move
+                              animation__pulse="property: scale; to: 1.35 1.35 1.35; dir: alternate; dur: 900; loop: true">
+                    </a-sphere>
+                    <a-entity id="dropzone-1" position="2.5 1.8 -2">
+                        <a-cylinder radius="0.75" height="0.12" color="#0d4d3d" material="emissive: #0d4d3d; emissiveIntensity: 0.5"></a-cylinder>
+                        <a-ring radius-inner="0.55" radius-outer="0.72" color="#00ff00"
+                                material="emissive: #00ff00; emissiveIntensity: 0.9; opacity: 0.95; transparent: true"
+                                rotation="-90 0 0" position="0 0.1 0"></a-ring>
+                        <a-cone radius-bottom="0.14" radius-top="0" height="0.35" color="#00ff00"
+                                material="emissive: #00ff00; emissiveIntensity: 1"
+                                position="0 1 0" rotation="180 0 0"
+                                animation__bounce="property: position; to: 0 0.8 0; dir: alternate; dur: 700; loop: true"></a-cone>
+                        <a-text value="اسحب هنا" align="center" position="0 1.7 0" color="#00ff00" scale="1.6 1.6 1.6"></a-text>
+                    </a-entity>
+                </a-entity>
+
+                <!-- ============ النشاط 2: الرابطة الأيونية ============ -->
+                <a-entity id="activity-2" visible="false">
+                    <a-entity position="-2.3 1.8 -2">
+                        <a-sphere radius="0.6" color="#ff4d4d"></a-sphere>
+                        <a-sphere position="0.2 0.15 0" radius="0.6" color="#999"></a-sphere>
+                        <a-sphere position="-0.2 -0.1 0.05" radius="0.6" color="#ff4d4d"></a-sphere>
+                        <a-text id="na-label" value="Na" align="center" position="0 -1.3 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-sphere position="1 0.4 0.3" radius="0.1" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.4"></a-sphere>
+                        <a-sphere position="-1 -0.4 0.3" radius="0.1" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.4"></a-sphere>
+                    </a-entity>
+                    <a-sphere class="draggable" data-activity="2" data-electron="na-electron"
+                              data-initial-pos="-1.3 1.8 -2"
+                              position="-1.3 1.8 -2" radius="0.32" color="#00ffff"
+                              material="emissive: #00ffff; emissiveIntensity: 1.6; metalness: 0.3"
+                              drag-move
+                              animation__pulse="property: scale; to: 1.35 1.35 1.35; dir: alternate; dur: 900; loop: true">
+                    </a-sphere>
+                    <a-entity position="2.3 1.8 -2">
+                        <a-sphere radius="0.7" color="#c49a3f"></a-sphere>
+                        <a-sphere position="0.22 0.18 0" radius="0.7" color="#999"></a-sphere>
+                        <a-sphere position="-0.22 -0.15 0.05" radius="0.7" color="#c49a3f"></a-sphere>
+                        <a-text id="cl-label" value="Cl" align="center" position="0 -1.4 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-sphere position="0 0 1.5" radius="0.12" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.6"></a-sphere>
+                        <a-sphere position="1.2 0 0.8" radius="0.12" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.6"></a-sphere>
+                        <a-sphere position="-1.2 0 0.8" radius="0.12" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.6"></a-sphere>
+                        <a-sphere position="0.8 1 0.8" radius="0.12" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.6"></a-sphere>
+                        <a-sphere position="-0.8 -1 0.8" radius="0.12" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.6"></a-sphere>
+                        <a-sphere position="0.8 -1 0.8" radius="0.12" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.6"></a-sphere>
+                        <a-sphere position="-0.8 1 0.8" radius="0.12" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.6"></a-sphere>
+                    </a-entity>
+                    <a-entity id="dropzone-2" position="1.2 1.8 -2">
+                        <a-cylinder radius="0.65" height="0.12" color="#0d4d3d" material="emissive: #0d4d3d; emissiveIntensity: 0.5"></a-cylinder>
+                        <a-ring radius-inner="0.5" radius-outer="0.62" color="#00ff00"
+                                material="emissive: #00ff00; emissiveIntensity: 0.9; opacity: 0.95; transparent: true"
+                                rotation="-90 0 0" position="0 0.1 0"></a-ring>
+                        <a-cone radius-bottom="0.12" radius-top="0" height="0.3" color="#00ff00"
+                                material="emissive: #00ff00; emissiveIntensity: 1"
+                                position="0 0.9 0" rotation="180 0 0"
+                                animation__bounce="property: position; to: 0 0.7 0; dir: alternate; dur: 700; loop: true"></a-cone>
+                    </a-entity>
+                </a-entity>
+
+                <!-- ============ النشاط 3: الرابطة التساهمية ============ -->
+                <a-entity id="activity-3" visible="false">
+                    <a-entity position="-2 1.8 -2">
                         <a-sphere radius="0.5" color="#ff4d4d"></a-sphere>
                         <a-sphere position="0.15 0.1 0" radius="0.5" color="#999"></a-sphere>
-                        <a-text value="Na" align="center" position="0 -1.1 0" color="#fff" scale="2 2 2"></a-text>
-                        <a-sphere position="0.8 0 0.3" radius="0.15" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.5"></a-sphere>
-                        <a-sphere position="-0.8 0 0.3" radius="0.15" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.5"></a-sphere>
-                        <a-sphere class="draggable" data-activity="1" data-electron="valence-1" data-initial-pos="0 0 1.5"
-                                  position="0 0 1.5" radius="0.3" color="#00ffff"
-                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
-                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
+                        <a-text value="H" align="center" position="0 -1 0" color="#fff" scale="2 2 2"></a-text>
                     </a-entity>
-                    <a-entity position="2.5 2 -2" id="dropzone-1">
-                        <a-box width="1.2" height="1.2" depth="1.2"
-                               material="color: #00ff00; emissive: #00ff00; emissiveIntensity: 0.5; opacity: 0.4; transparent: true; wireframe: true"></a-box>
-                        <a-text value="إلكترونات التكافؤ" align="center" position="0 1 0" color="#00ff00" scale="1.5 1.5 1.5"></a-text>
+                    <a-sphere class="draggable" data-activity="3" data-electron="h1-electron"
+                              data-initial-pos="-1.3 1.8 -2"
+                              position="-1.3 1.8 -2" radius="0.28" color="#00ffff"
+                              material="emissive: #00ffff; emissiveIntensity: 1.6"
+                              drag-move
+                              animation__pulse="property: scale; to: 1.35 1.35 1.35; dir: alternate; dur: 900; loop: true">
+                    </a-sphere>
+                    <a-entity position="2 1.8 -2">
+                        <a-sphere radius="0.5" color="#ff4d4d"></a-sphere>
+                        <a-sphere position="0.15 0.1 0" radius="0.5" color="#999"></a-sphere>
+                        <a-text value="H" align="center" position="0 -1 0" color="#fff" scale="2 2 2"></a-text>
+                    </a-entity>
+                    <a-sphere class="draggable" data-activity="3" data-electron="h2-electron"
+                              data-initial-pos="1.3 1.8 -2"
+                              position="1.3 1.8 -2" radius="0.28" color="#00ffff"
+                              material="emissive: #00ffff; emissiveIntensity: 1.6"
+                              drag-move
+                              animation__pulse="property: scale; to: 1.35 1.35 1.35; dir: alternate; dur: 900; loop: true">
+                    </a-sphere>
+                    <a-entity id="dropzone-3" position="0 1.8 -2">
+                        <a-cylinder radius="0.7" height="0.12" color="#0d4d3d" material="emissive: #0d4d3d; emissiveIntensity: 0.5"></a-cylinder>
+                        <a-ring radius-inner="0.5" radius-outer="0.68" color="#00ff00"
+                                material="emissive: #00ff00; emissiveIntensity: 0.9; opacity: 0.95; transparent: true"
+                                rotation="-90 0 0" position="0 0.1 0"></a-ring>
+                        <a-cone radius-bottom="0.14" radius-top="0" height="0.32" color="#00ff00"
+                                material="emissive: #00ff00; emissiveIntensity: 1"
+                                position="0 0.95 0" rotation="180 0 0"
+                                animation__bounce="property: position; to: 0 0.75 0; dir: alternate; dur: 700; loop: true"></a-cone>
                     </a-entity>
                 </a-entity>
 
-                <!-- النشاط 2: الرابطة الأيونية -->
-                <a-entity id="activity-2" visible="false">
-                    <a-entity position="-2.5 2 -2">
-                        <a-sphere radius="0.6" color="#ff4d4d"></a-sphere>
-                        <a-sphere position="0.2 0.1 0" radius="0.6" color="#999"></a-sphere>
-                        <a-text value="Na" align="center" position="0 -1.2 0" color="#fff" scale="2 2 2" id="na-label"></a-text>
-                        <a-sphere class="draggable" data-activity="2" data-electron="na-electron" data-initial-pos="0 0 1.5"
-                                  position="0 0 1.5" radius="0.3" color="#00ffff"
-                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
-                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
+                <!-- ============ النشاط 4: الرابطة الفلزية ============ -->
+                <a-entity id="activity-4" visible="false">
+                    <a-text value="الرابطة الفلزية" align="center" position="0 3.5 -2.5" color="#c49a3f" scale="2.2 2.2 2.2"></a-text>
+                    <a-text value="بحر الإلكترونات" align="center" position="0 3.1 -2.5" color="#00ffff" scale="1.5 1.5 1.5"></a-text>
+                    <a-entity id="metal-ion-grid" position="0 1.8 -2.5"></a-entity>
+                </a-entity>
+
+                <!-- ============ النشاط 5: الرابطة القطبية ============ -->
+                <a-entity id="activity-5" visible="false">
+                    <a-text value="الرابطة التساهمية القطبية" align="center" position="0 3.5 -2" color="#c49a3f" scale="2 2 2"></a-text>
+                    <a-text value="HCl" align="center" position="0 3.1 -2" color="#fff" scale="1.6 1.6 1.6"></a-text>
+                    <a-entity position="-1.5 1.5 -2">
+                        <a-sphere radius="0.45" color="#ff4d4d" material="emissive: #ff4d4d; emissiveIntensity: 0.2"></a-sphere>
+                        <a-text value="H" align="center" position="0 -0.85 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-text id="h-charge" value="" align="center" position="0 0.9 0" color="#00ffff" scale="1.5 1.5 1.5"></a-text>
                     </a-entity>
-                    <a-entity position="2.5 2 -2">
-                        <a-sphere radius="0.7" color="#c49a3f"></a-sphere>
-                        <a-sphere position="0.2 0.2 0" radius="0.7" color="#999"></a-sphere>
-                        <a-text value="Cl" align="center" position="0 -1.3 0" color="#fff" scale="2 2 2" id="cl-label"></a-text>
-                        <a-sphere position="0 0 1.5" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
-                        <a-sphere position="1.2 0 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
-                        <a-sphere position="-1.2 0 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
-                        <a-sphere position="0.8 1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
-                        <a-sphere position="-0.8 -1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
-                        <a-sphere position="0.8 -1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
-                        <a-sphere position="-0.8 1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
-                        <a-cylinder id="dropzone-2" position="0 0 1.5" radius="0.5" height="0.08" rotation="-90 0 0"
-                                    material="color: #00ff00; emissive: #00ff00; emissiveIntensity: 0.6; opacity: 0.7; transparent: true"
-                                    animation="property: scale; to: 1.3 1 1.3; dir: alternate; dur: 1500; loop: true"></a-cylinder>
+                    <a-entity position="1.5 1.5 -2">
+                        <a-sphere radius="0.65" color="#c49a3f" material="emissive: #c49a3f; emissiveIntensity: 0.2"></a-sphere>
+                        <a-text value="Cl" align="center" position="0 -1.15 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-text id="cl-charge" value="" align="center" position="0 1.15 0" color="#00ffff" scale="1.5 1.5 1.5"></a-text>
+                    </a-entity>
+                    <a-sphere id="shared-electron-cloud" position="0 1.5 -2" radius="0.28" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.8; opacity: 0.6; transparent: true"></a-sphere>
+                </a-entity>
+
+                <!-- ============ النشاط 6: موازنة المعادلات ============ -->
+                <a-entity id="activity-6" visible="false">
+                    <a-text value="وازن معادلة تكوين الماء" align="center" position="0 3.5 -2" color="#c49a3f" scale="2 2 2"></a-text>
+                    
+                    <!-- المتفاعلات: H₂ -->
+                    <a-entity position="-2.5 1.8 -2">
+                        <a-sphere position="-0.22 0 0" radius="0.28" color="#ff4d4d" material="emissive: #ff4d4d; emissiveIntensity: 0.3"></a-sphere>
+                        <a-sphere position="0.22 0 0" radius="0.28" color="#ff4d4d" material="emissive: #ff4d4d; emissiveIntensity: 0.3"></a-sphere>
+                        <a-text value="H₂" align="center" position="0 -0.7 0" color="#fff" scale="1.6 1.6 1.6"></a-text>
+                    </a-entity>
+                    
+                    <a-text value="+" align="center" position="-0.7 1.8 -2" color="#fff" scale="2.5 2.5 2.5"></a-text>
+                    
+                    <!-- المتفاعلات: O₂ -->
+                    <a-entity position="0.5 1.8 -2">
+                        <a-sphere position="-0.25 0 0" radius="0.32" color="#4d7fff" material="emissive: #4d7fff; emissiveIntensity: 0.3"></a-sphere>
+                        <a-sphere position="0.25 0 0" radius="0.32" color="#4d7fff" material="emissive: #4d7fff; emissiveIntensity: 0.3"></a-sphere>
+                        <a-text value="O₂" align="center" position="0 -0.8 0" color="#fff" scale="1.6 1.6 1.6"></a-text>
+                    </a-entity>
+                    
+                    <a-text value="→" align="center" position="1.7 1.8 -2" color="#fff" scale="3 3 3"></a-text>
+                    
+                    <!-- الناتج: H₂O -->
+                    <a-entity position="3 1.8 -2">
+                        <a-sphere position="0 0.25 0" radius="0.32" color="#4d7fff" material="emissive: #4d7fff; emissiveIntensity: 0.3"></a-sphere>
+                        <a-sphere position="-0.28 -0.18 0" radius="0.24" color="#ff4d4d" material="emissive: #ff4d4d; emissiveIntensity: 0.3"></a-sphere>
+                        <a-sphere position="0.28 -0.18 0" radius="0.24" color="#ff4d4d" material="emissive: #ff4d4d; emissiveIntensity: 0.3"></a-sphere>
+                        <a-text value="H₂O" align="center" position="0 -0.8 0" color="#fff" scale="1.6 1.6 1.6"></a-text>
                     </a-entity>
                 </a-entity>
 
-                <!-- النشاط 3: الرابطة التساهمية -->
-                <a-entity id="activity-3" visible="false">
-                    <a-entity position="-1.5 2 -2">
-                        <a-sphere radius="0.5" color="#ff4d4d"></a-sphere>
-                        <a-text value="H" align="center" position="0 -0.9 0" color="#fff" scale="2 2 2"></a-text>
-                        <a-sphere class="draggable" data-activity="3" data-electron="h1-electron" data-initial-pos="0 0 1.2"
-                                  position="0 0 1.2" radius="0.25" color="#00ffff"
-                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
-                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
-                    </a-entity>
-                    <a-entity position="1.5 2 -2">
-                        <a-sphere radius="0.5" color="#ff4d4d"></a-sphere>
-                        <a-text value="H" align="center" position="0 -0.9 0" color="#fff" scale="2 2 2"></a-text>
-                        <a-sphere class="draggable" data-activity="3" data-electron="h2-electron" data-initial-pos="0 0 1.2"
-                                  position="0 0 1.2" radius="0.25" color="#00ffff"
-                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
-                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
-                    </a-entity>
-                    <a-entity id="dropzone-3" position="0 2 -1">
-                        <a-cylinder radius="0.55" height="0.08" rotation="-90 0 0"
-                                    material="color: #00ff00; emissive: #00ff00; emissiveIntensity: 0.6; opacity: 0.7; transparent: true"
-                                    animation="property: scale; to: 1.3 1 1.3; dir: alternate; dur: 1500; loop: true"></a-cylinder>
-                    </a-entity>
-                </a-entity>
             </a-scene>
+
+            <!-- ===== لوحة تحكم النشاط 4 ===== -->
+            <div id="activity-4-controls" class="activity-overlay hidden">
+                <div class="overlay-panel">
+                    <h3 class="overlay-title">⚡ مستوى الطاقة</h3>
+                    <div class="energy-display">
+                        <span class="energy-value" id="energy-value">0</span>
+                        <span class="energy-unit">/ 5</span>
+                    </div>
+                    <div class="energy-bar">
+                        <div class="energy-bar-fill" id="energy-bar-fill"></div>
+                    </div>
+                    <div class="energy-buttons">
+                        <button class="energy-btn decrease" onclick="decreaseEnergy()" id="btn-decrease">−</button>
+                        <button class="energy-btn increase" onclick="increaseEnergy()" id="btn-increase">+</button>
+                    </div>
+                    <p class="overlay-hint">زد مستوى الطاقة لتحرير الإلكترونات ورؤية "بحر الإلكترونات"</p>
+                </div>
+            </div>
+
+            <!-- ===== لوحة تحكم النشاط 6 ===== -->
+         <!-- ===== لوحة تحكم النشاط 6 (نسخة محسّنة) ===== -->
+<div id="activity-6-controls" class="activity-overlay hidden">
+    <div class="overlay-panel equation-panel">
+        <h3 class="overlay-title">⚖️ وازن المعادلة الكيميائية</h3>
+        
+        <div class="equation-visual">
+            <!-- H₂ -->
+            <div class="eq-block">
+                <div class="coeff-controls">
+                    <button type="button" class="coeff-btn plus" data-species="H2" data-delta="1">+</button>
+                    <span class="coeff-value" id="coeff-H2">1</span>
+                    <button type="button" class="coeff-btn minus" data-species="H2" data-delta="-1">−</button>
+                </div>
+                <div class="compound-label">H₂</div>
+            </div>
+            
+            <span class="eq-sign">+</span>
+            
+            <!-- O₂ -->
+            <div class="eq-block">
+                <div class="coeff-controls">
+                    <button type="button" class="coeff-btn plus" data-species="O2" data-delta="1">+</button>
+                    <span class="coeff-value" id="coeff-O2">1</span>
+                    <button type="button" class="coeff-btn minus" data-species="O2" data-delta="-1">−</button>
+                </div>
+                <div class="compound-label">O₂</div>
+            </div>
+            
+            <span class="eq-sign">→</span>
+            
+            <!-- H₂O -->
+            <div class="eq-block">
+                <div class="coeff-controls">
+                    <button type="button" class="coeff-btn plus" data-species="H2O" data-delta="1">+</button>
+                    <span class="coeff-value" id="coeff-H2O">1</span>
+                    <button type="button" class="coeff-btn minus" data-species="H2O" data-delta="-1">−</button>
+                </div>
+                <div class="compound-label">H₂O</div>
+            </div>
+        </div>
+        
+        <!-- عداد الذرات — يساعد الطالب على التحقق بنفسه -->
+        <div class="atom-counter">
+            <div class="counter-side">
+                <p class="counter-label">🔬 المتفاعلات</p>
+                <p class="counter-line">الهيدروجين H: <strong id="left-H">2</strong></p>
+                <p class="counter-line">الأكسجين O: <strong id="left-O">2</strong></p>
+            </div>
+            <div class="counter-vs">⚖️</div>
+            <div class="counter-side">
+                <p class="counter-label">🧪 النواتج</p>
+                <p class="counter-line">الهيدروجين H: <strong id="right-H">2</strong></p>
+                <p class="counter-line">الأكسجين O: <strong id="right-O">1</strong></p>
+            </div>
+        </div>
+        
+        <div class="equation-status" id="equation-status">
+            ✗ غير موزونة — استمر في المحاولة
+        </div>
+        
+        <p class="overlay-hint">💡 غيّر المعاملات حتى يتساوى عدد ذرات كل عنصر في الطرفين</p>
+    </div>
+</div>
+
+            <!-- ===== لوحة تحكم النشاط 5 (تُبنى ديناميكياً في JS) ===== -->
+            <!-- لا حاجة لكتابة HTML هنا؛ سيتم إنشاؤها في switchActivity -->
 
             <div id="floating-controls">
                 <button class="float-btn" onclick="resetActivity()" title="إعادة">🔄</button>
@@ -175,12 +372,12 @@
 
         <footer id="app-footer">
             <button class="nav-btn" id="prev-btn" onclick="prevActivity()" disabled>← السابق</button>
-            <span class="activity-indicator" id="activity-indicator">النشاط 1 من 3</span>
+            <span class="activity-indicator" id="activity-indicator">النشاط 1 من 6</span>
             <button class="nav-btn primary" id="next-btn" onclick="nextActivity()">التالي →</button>
         </footer>
     </div>
 
-    <!-- نافذة النجاح -->
+    <!-- ===== نافذة النجاح ===== -->
     <div id="success-modal" class="modal hidden">
         <div class="modal-content">
             <div class="success-icon">🎉</div>
@@ -194,16 +391,17 @@
         </div>
     </div>
 
-    <!-- نافذة المساعدة -->
+    <!-- ===== نافذة المساعدة ===== -->
     <div id="help-modal" class="modal hidden">
         <div class="modal-content">
             <h2>❓ كيفية الاستخدام</h2>
             <div class="help-steps">
                 <div class="step"><span class="step-num">1</span><p>اختر النشاط من القائمة العلوية</p></div>
                 <div class="step"><span class="step-num">2</span><p>اقرأ التعليمات في اللوحة الجانبية</p></div>
-                <div class="step"><span class="step-num">3</span><p>اسحب الإلكترونات المتوهجة بالماوس أو بإصبعك</p></div>
-                <div class="step"><span class="step-num">4</span><p>ضعها في المنطقة الخضراء المخصصة</p></div>
-                <div class="step"><span class="step-num">5</span><p>اسحب المساحة الفارغة لتدوير المشهد</p></div>
+                <div class="step"><span class="step-num">3</span><p>اسحب الإلكترون المتوهج بالماوس أو الإصبع</p></div>
+                <div class="step"><span class="step-num">4</span><p>أفلته داخل المنطقة الخضراء المتوهجة</p></div>
+                <div class="step"><span class="step-num">5</span><p>للأنشطة 4 و 6: استخدم الأزرار في اللوحة السفلية</p></div>
+                <div class="step"><span class="step-num">6</span><p>اسحب المساحة الفارغة لتدوير المشهد</p></div>
             </div>
             <div class="modal-actions">
                 <button class="btn-primary" onclick="closeHelp()">فهمت، شكراً!</button>
@@ -211,16 +409,19 @@
         </div>
     </div>
 
-    <!-- نافذة إكمال جميع الأنشطة -->
+    <!-- ===== نافذة إكمال جميع الأنشطة ===== -->
     <div id="completion-modal" class="modal hidden">
         <div class="modal-content">
             <div class="success-icon">🏆</div>
-            <h2>أكملت جميع الأنشطة!</h2>
+            <h2>أكملت جميع الأنشطة الستة!</h2>
             <p class="success-message">رائع! لقد تعلمت:</p>
             <div class="completion-list">
                 <div class="completion-item">✅ إلكترونات التكافؤ</div>
                 <div class="completion-item">✅ الرابطة الأيونية</div>
                 <div class="completion-item">✅ الرابطة التساهمية</div>
+                <div class="completion-item">✅ الرابطة الفلزية</div>
+                <div class="completion-item">✅ الرابطة القطبية</div>
+                <div class="completion-item">✅ موازنة المعادلات</div>
             </div>
             <div class="modal-actions">
                 <button class="btn-primary" onclick="restartAll()">🔄 ابدأ من جديد</button>
