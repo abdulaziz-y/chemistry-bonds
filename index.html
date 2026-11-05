@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مختبر الروابط الكيميائية - الواقع المعزز</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===== شاشة التحميل ===== -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p>جارٍ تحضير المختبر...</p>
+    </div>
+
+    <!-- ===== شاشة الترحيب ===== -->
+    <div id="welcome-screen">
+        <div class="welcome-card">
+            <div class="logo">⚛️</div>
+            <h1>مختبر الروابط الكيميائية</h1>
+            <p class="subtitle">من التجريد إلى المشاهدة</p>
+            <p class="description">
+                تجربة تفاعلية ثلاثية الأبعاد لفهم الروابط الكيميائية والتفاعلات الذرية
+                <br>الصف الثالث المتوسط | مادة العلوم
+            </p>
+            <div class="features">
+                <div class="feature"><span class="icon">⚛️</span><span>إلكترونات التكافؤ</span></div>
+                <div class="feature"><span class="icon">🔗</span><span>الرابطة الأيونية</span></div>
+                <div class="feature"><span class="icon">🤝</span><span>الرابطة التساهمية</span></div>
+            </div>
+            <button class="btn-primary" onclick="startLab()">ابدأ التجربة 🚀</button>
+            
+            <div class="qr-section">
+                <p>📱 امسح الرمز لفتح النشاط على هاتفك</p>
+                <div id="qrcode"></div>
+            </div>
+            
+            <button class="btn-link" onclick="showHelp()">كيفية الاستخدام؟</button>
+        </div>
+    </div>
+
+    <!-- ===== التطبيق الرئيسي ===== -->
+    <div id="main-app" class="hidden">
+        
+        <!-- الرأس -->
+        <header id="app-header">
+            <div class="header-left"><span class="app-title">⚛️ مختبر الروابط</span></div>
+            <div class="header-center">
+                <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+                <span class="progress-text" id="progress-text">0 / 3</span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" onclick="showHelp()" title="مساعدة">❓</button>
+                <button class="icon-btn" onclick="backToWelcome()" title="الرئيسية">🏠</button>
+            </div>
+        </header>
+
+        <!-- التبويبات -->
+        <nav id="activity-tabs">
+            <button class="tab active" data-activity="1" onclick="switchActivity(1)">
+                <span class="tab-num">1</span><span class="tab-label">إلكترونات التكافؤ</span>
+            </button>
+            <button class="tab" data-activity="2" onclick="switchActivity(2)">
+                <span class="tab-num">2</span><span class="tab-label">الرابطة الأيونية</span>
+            </button>
+            <button class="tab" data-activity="3" onclick="switchActivity(3)">
+                <span class="tab-num">3</span><span class="tab-label">الرابطة التساهمية</span>
+            </button>
+        </nav>
+
+        <!-- منطقة المشهد -->
+        <main id="scene-wrapper">
+            <aside id="instruction-panel">
+                <h3 id="instr-title">إلكترونات التكافؤ</h3>
+                <p id="instr-desc">اسحب الإلكترون المتوهج إلى الصندوق المخصص.</p>
+                <div class="tip"><span>💡</span><span id="instr-tip"></span></div>
+            </aside>
+
+            <a-scene id="ar-scene" background="color: #1a1a1a" renderer="antialias: true" embedded>
+                <a-entity light="type: ambient; color: #ffffff; intensity: 0.7"></a-entity>
+                <a-entity light="type: directional; color: #ffffff; intensity: 1.2; position: 5 10 7"></a-entity>
+                <a-entity light="type: point; color: #00ffff; intensity: 0.6; position: 0 4 3"></a-entity>
+                
+                <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#252530"></a-plane>
+                <a-grid position="0 0.01 0" rotation="-90 0 0" width="20" height="20" cell-size="0.5" color="#3a3a45" opacity="0.3"></a-grid>
+
+                <a-entity id="camera-rig" position="0 2 5" look-controls>
+                    <a-entity camera position="0 0 0"></a-entity>
+                </a-entity>
+
+                <!-- النشاط 1: إلكترونات التكافؤ -->
+                <a-entity id="activity-1" visible="true">
+                    <a-entity position="-2 2 -2">
+                        <a-sphere radius="0.5" color="#ff4d4d"></a-sphere>
+                        <a-sphere position="0.15 0.1 0" radius="0.5" color="#999"></a-sphere>
+                        <a-text value="Na" align="center" position="0 -1.1 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-sphere position="0.8 0 0.3" radius="0.15" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.5"></a-sphere>
+                        <a-sphere position="-0.8 0 0.3" radius="0.15" color="#00ffff" material="emissive: #00ffff; emissiveIntensity: 0.5"></a-sphere>
+                        <a-sphere class="draggable" data-activity="1" data-electron="valence-1" data-initial-pos="0 0 1.5"
+                                  position="0 0 1.5" radius="0.3" color="#00ffff"
+                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
+                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
+                    </a-entity>
+                    <a-entity position="2.5 2 -2" id="dropzone-1">
+                        <a-box width="1.2" height="1.2" depth="1.2"
+                               material="color: #00ff00; emissive: #00ff00; emissiveIntensity: 0.5; opacity: 0.4; transparent: true; wireframe: true"></a-box>
+                        <a-text value="إلكترونات التكافؤ" align="center" position="0 1 0" color="#00ff00" scale="1.5 1.5 1.5"></a-text>
+                    </a-entity>
+                </a-entity>
+
+                <!-- النشاط 2: الرابطة الأيونية -->
+                <a-entity id="activity-2" visible="false">
+                    <a-entity position="-2.5 2 -2">
+                        <a-sphere radius="0.6" color="#ff4d4d"></a-sphere>
+                        <a-sphere position="0.2 0.1 0" radius="0.6" color="#999"></a-sphere>
+                        <a-text value="Na" align="center" position="0 -1.2 0" color="#fff" scale="2 2 2" id="na-label"></a-text>
+                        <a-sphere class="draggable" data-activity="2" data-electron="na-electron" data-initial-pos="0 0 1.5"
+                                  position="0 0 1.5" radius="0.3" color="#00ffff"
+                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
+                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
+                    </a-entity>
+                    <a-entity position="2.5 2 -2">
+                        <a-sphere radius="0.7" color="#c49a3f"></a-sphere>
+                        <a-sphere position="0.2 0.2 0" radius="0.7" color="#999"></a-sphere>
+                        <a-text value="Cl" align="center" position="0 -1.3 0" color="#fff" scale="2 2 2" id="cl-label"></a-text>
+                        <a-sphere position="0 0 1.5" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
+                        <a-sphere position="1.2 0 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
+                        <a-sphere position="-1.2 0 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
+                        <a-sphere position="0.8 1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
+                        <a-sphere position="-0.8 -1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
+                        <a-sphere position="0.8 -1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
+                        <a-sphere position="-0.8 1 0.8" radius="0.13" color="#00ffff" material="emissive: #00ffff"></a-sphere>
+                        <a-cylinder id="dropzone-2" position="0 0 1.5" radius="0.5" height="0.08" rotation="-90 0 0"
+                                    material="color: #00ff00; emissive: #00ff00; emissiveIntensity: 0.6; opacity: 0.7; transparent: true"
+                                    animation="property: scale; to: 1.3 1 1.3; dir: alternate; dur: 1500; loop: true"></a-cylinder>
+                    </a-entity>
+                </a-entity>
+
+                <!-- النشاط 3: الرابطة التساهمية -->
+                <a-entity id="activity-3" visible="false">
+                    <a-entity position="-1.5 2 -2">
+                        <a-sphere radius="0.5" color="#ff4d4d"></a-sphere>
+                        <a-text value="H" align="center" position="0 -0.9 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-sphere class="draggable" data-activity="3" data-electron="h1-electron" data-initial-pos="0 0 1.2"
+                                  position="0 0 1.2" radius="0.25" color="#00ffff"
+                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
+                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
+                    </a-entity>
+                    <a-entity position="1.5 2 -2">
+                        <a-sphere radius="0.5" color="#ff4d4d"></a-sphere>
+                        <a-text value="H" align="center" position="0 -0.9 0" color="#fff" scale="2 2 2"></a-text>
+                        <a-sphere class="draggable" data-activity="3" data-electron="h2-electron" data-initial-pos="0 0 1.2"
+                                  position="0 0 1.2" radius="0.25" color="#00ffff"
+                                  material="emissive: #00ffff; emissiveIntensity: 1.2" drag-move
+                                  animation="property: scale; to: 1.3 1.3 1.3; dir: alternate; dur: 1000; loop: true"></a-sphere>
+                    </a-entity>
+                    <a-entity id="dropzone-3" position="0 2 -1">
+                        <a-cylinder radius="0.55" height="0.08" rotation="-90 0 0"
+                                    material="color: #00ff00; emissive: #00ff00; emissiveIntensity: 0.6; opacity: 0.7; transparent: true"
+                                    animation="property: scale; to: 1.3 1 1.3; dir: alternate; dur: 1500; loop: true"></a-cylinder>
+                    </a-entity>
+                </a-entity>
+            </a-scene>
+
+            <div id="floating-controls">
+                <button class="float-btn" onclick="resetActivity()" title="إعادة">🔄</button>
+                <button class="float-btn" onclick="toggleFullscreen()" title="ملء الشاشة">⛶</button>
+            </div>
+        </main>
+
+        <footer id="app-footer">
+            <button class="nav-btn" id="prev-btn" onclick="prevActivity()" disabled>← السابق</button>
+            <span class="activity-indicator" id="activity-indicator">النشاط 1 من 3</span>
+            <button class="nav-btn primary" id="next-btn" onclick="nextActivity()">التالي →</button>
+        </footer>
+    </div>
+
+    <!-- نافذة النجاح -->
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="success-icon">🎉</div>
+            <h2>أحسنت!</h2>
+            <p class="success-message" id="success-message"></p>
+            <div class="success-detail" id="success-detail"></div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="closeSuccessAndContinue()">متابعة ←</button>
+                <button class="btn-secondary" onclick="closeSuccessAndStay()">إعادة النشاط</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة المساعدة -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>❓ كيفية الاستخدام</h2>
+            <div class="help-steps">
+                <div class="step"><span class="step-num">1</span><p>اختر النشاط من القائمة العلوية</p></div>
+                <div class="step"><span class="step-num">2</span><p>اقرأ التعليمات في اللوحة الجانبية</p></div>
+                <div class="step"><span class="step-num">3</span><p>اسحب الإلكترونات المتوهجة بالماوس أو بإصبعك</p></div>
+                <div class="step"><span class="step-num">4</span><p>ضعها في المنطقة الخضراء المخصصة</p></div>
+                <div class="step"><span class="step-num">5</span><p>اسحب المساحة الفارغة لتدوير المشهد</p></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="closeHelp()">فهمت، شكراً!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إكمال جميع الأنشطة -->
+    <div id="completion-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="success-icon">🏆</div>
+            <h2>أكملت جميع الأنشطة!</h2>
+            <p class="success-message">رائع! لقد تعلمت:</p>
+            <div class="completion-list">
+                <div class="completion-item">✅ إلكترونات التكافؤ</div>
+                <div class="completion-item">✅ الرابطة الأيونية</div>
+                <div class="completion-item">✅ الرابطة التساهمية</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="restartAll()">🔄 ابدأ من جديد</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
