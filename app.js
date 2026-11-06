@@ -245,16 +245,19 @@ function openScene(n) {
     if (n < 1 || n > 6) return;
     currentActivity = n;
 
+    // إظهار النشاط المطلوب وإخفاء الباقي
     for (let i = 1; i <= 6; i++) {
         const el = document.getElementById(`activity-${i}`);
         if (el) el.setAttribute('visible', i === n ? 'true' : 'false');
     }
 
+    // إخفاء كل اللوحات السفلية أولاً
     ['ctrl-4', 'ctrl-5', 'ctrl-6'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add('hidden');
     });
 
+    // تهيئة النشاط المحدد
     if (n === 4) {
         const c = document.getElementById('ctrl-4');
         if (c) c.classList.remove('hidden');
@@ -276,18 +279,46 @@ function openScene(n) {
     if (title) title.textContent = `النشاط ${n}: ${activityData[n].title}`;
     updateSceneProgress();
 
+    // فتح الـ Overlay
     const overlay = document.getElementById('sceneOverlay');
     overlay.classList.add('active');
     overlay.setAttribute('aria-hidden', 'false');
 
-    setTimeout(() => {
-        const scene = document.getElementById('ar-scene');
-        if (scene && scene.resize) scene.resize();
-    }, 100);
+    // ✅ الأهم: إعادة ضبط حجم A-Frame بعد ظهور البطاقة
+    resizeSceneMultipleTimes();
 
     playSound(600, 0.08);
 }
 
+// دالة مساعدة: تعيد ضبط حجم A-Frame عدة مرات لضمان الاستقرار
+function resizeSceneMultipleTimes() {
+    const scene = document.getElementById('ar-scene');
+    if (!scene) return;
+
+    const doResize = () => {
+        if (scene.resize) {
+            try { scene.resize(); } catch (e) {}
+        }
+        // بديل احتياطي: إعادة ضبط الـ canvas يدوياً
+        const canvas = scene.canvas;
+        const container = scene.parentElement;
+        if (canvas && container) {
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            if (w > 0 && h > 0) {
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+            }
+        }
+    };
+
+    // نستدعيها 4 مرات: فوراً، وبعد 100ms، 300ms، 500ms
+    // لأن البطاقة تتحرك (animation) ويحتاج A-Frame لوقت لاكتشاف الحجم النهائي
+    doResize();
+    setTimeout(doResize, 100);
+    setTimeout(doResize, 300);
+    setTimeout(doResize, 500);
+}
 function closeScene() {
     const overlay = document.getElementById('sceneOverlay');
     if (overlay) {
@@ -1125,16 +1156,37 @@ window.addEventListener('load', () => {
         }
     } catch (e) {}
 
-    // إغلاق النوافذ بالنقر الخارجي
-    document.querySelectorAll('.overlay, .modal').forEach(el => {
-        el.addEventListener('click', (e) => {
-            if (e.target === el) {
-                el.classList.remove('active');
-                el.setAttribute('aria-hidden', 'true');
+// ✅ مراقب حجم تلقائي لـ A-Frame
+if (window.ResizeObserver) {
+    const sceneBody = document.querySelector('.scene-body');
+    if (sceneBody) {
+        const sceneResizeObserver = new ResizeObserver(() => {
+            const scene = document.getElementById('ar-scene');
+            if (scene && scene.resize) {
+                try { scene.resize(); } catch (e) {}
             }
         });
+        sceneResizeObserver.observe(sceneBody);
+    }
+}
+    // إغلاق النوافذ بالنقر الخارجي
+document.querySelectorAll('.overlay, .modal').forEach(el => {
+    el.addEventListener('click', (e) => {
+        if (e.target === el) {
+            el.classList.remove('active');
+            el.setAttribute('aria-hidden', 'true');
+            
+            // إذا كان المشهد، نوقف الكاميرا
+            if (el.id === 'sceneOverlay') {
+                currentActivity = null;
+                const rig = document.getElementById('camera-rig');
+                if (rig && rig.components['look-controls']) {
+                    rig.components['look-controls'].enabled = true;
+                }
+            }
+        }
     });
-
+});
     // ESC لإغلاق كل شيء
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
